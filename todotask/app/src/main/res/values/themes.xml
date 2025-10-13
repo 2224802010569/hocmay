@@ -1,9 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Todotask" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <!-- Chủ đề tổng của ứng dụng -->
+    <style name="Theme.TodoTask" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Màu chủ đạo -->
+        <item name="colorPrimary">#00BFFF</item>
+        <item name="colorPrimaryContainer">#A8EFFF</item>
+        <item name="colorSecondary">#FFD700</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSurface">#FFFFFF</item>
+
+        <!-- Thanh trạng thái -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimaryContainer</item>
+
+        <!-- Hành vi chuyển cảnh -->
+        <item name="android:windowAnimationStyle">@style/WindowAnimationFade</item>
     </style>
 
-    <style name="Theme.Todotask" parent="Base.Theme.Todotask" />
+    <!-- Animation đơn giản -->
+    <style name="WindowAnimationFade">
+        <item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@android:anim/fade_out</item>
+    </style>
 </resources>

@@ -1,7 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Todotask" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Theme.TodoTask" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#00A6D6</item>
+        <item name="colorPrimaryContainer">#003B4E</item>
+        <item name="colorSecondary">#FFD54F</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimaryContainer</item>
     </style>
 </resources>
