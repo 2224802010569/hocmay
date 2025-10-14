@@ -1,0 +1,12 @@
+<!-- res/menu/menu_main.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_account"
+        android:title="Account" />
+    <item
+        android:id="@+id/menu_into"
+        android:title="Into" />
+    <item
+        android:id="@+id/menu_group"
+        android:title="Nhóm" />
+</menu>

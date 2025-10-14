@@ -1,0 +1,191 @@
+package com.example.todotask.data.dao;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.example.todotask.data.database.DatabaseHelper;
+import com.example.todotask.data.model.Task;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TaskDao {
+    private final DatabaseHelper dbHelper;
+
+    public TaskDao(Context context) {
+        dbHelper = new DatabaseHelper(context);
+    }
+    private Task cursorToTask(Cursor c) {
+        Task t = new Task();
+        t.setTaskId(c.getInt(c.getColumnIndexOrThrow("task_id")));
+        t.setTitle(c.getString(c.getColumnIndexOrThrow("title")));
+        t.setDescription(c.getString(c.getColumnIndexOrThrow("description")));
+        t.setStartTime(c.getString(c.getColumnIndexOrThrow("start_time")));
+        t.setEndTime(c.getString(c.getColumnIndexOrThrow("end_time")));
+        t.setCompleted(c.getInt(c.getColumnIndexOrThrow("is_completed")) == 1);
+        t.setGroupName(c.getString(c.getColumnIndexOrThrow("group_name"))); // nhớ thêm cột này trong DB
+        return t;
+    }
+    public long insertTask(Task t) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseHelper.COLUMN_TASK_USER_ID, t.getUserId());
+        if (t.getCategoryId() != null) cv.put(DatabaseHelper.COLUMN_TASK_CATEGORY_ID, t.getCategoryId());
+        cv.put(DatabaseHelper.COLUMN_TASK_TITLE, t.getTitle());
+        cv.put(DatabaseHelper.COLUMN_TASK_DESCRIPTION, t.getDescription());
+        cv.put(DatabaseHelper.COLUMN_TASK_START, t.getStartTime());
+        cv.put(DatabaseHelper.COLUMN_TASK_END, t.getEndTime());
+        cv.put(DatabaseHelper.COLUMN_TASK_COMPLETED, t.isCompleted() ? 1 : 0);
+        cv.put(DatabaseHelper.COLUMN_TASK_NOTIFIED, t.isNotified() ? 1 : 0);
+        long id = db.insert(DatabaseHelper.TABLE_TASK, null, cv);
+        db.close();
+        return id;
+    }
+
+    public boolean updateTask(Task t) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseHelper.COLUMN_TASK_TITLE, t.getTitle());
+        cv.put(DatabaseHelper.COLUMN_TASK_DESCRIPTION, t.getDescription());
+        cv.put(DatabaseHelper.COLUMN_TASK_START, t.getStartTime());
+        cv.put(DatabaseHelper.COLUMN_TASK_END, t.getEndTime());
+        cv.put(DatabaseHelper.COLUMN_TASK_COMPLETED, t.isCompleted() ? 1 : 0);
+        cv.put(DatabaseHelper.COLUMN_TASK_NOTIFIED, t.isNotified() ? 1 : 0);
+        if (t.getCategoryId() != null) cv.put(DatabaseHelper.COLUMN_TASK_CATEGORY_ID, t.getCategoryId());
+        int rows = db.update(DatabaseHelper.TABLE_TASK, cv, DatabaseHelper.COLUMN_TASK_ID + " = ?", new String[]{String.valueOf(t.getTaskId())});
+        db.close();
+        return rows > 0;
+    }
+
+    public boolean deleteTask(int taskId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int rows = db.delete(DatabaseHelper.TABLE_TASK, DatabaseHelper.COLUMN_TASK_ID + " = ?", new String[]{String.valueOf(taskId)});
+        db.close();
+        return rows > 0;
+    }
+
+    // 🟢 Thêm task mới
+    public long addTask(Task task) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("user_id", task.getUserId());
+        values.put("category_id", task.getCategoryId());
+        values.put("title", task.getTitle());
+        values.put("description", task.getDescription());
+        values.put("start_time", task.getStartTime());
+        values.put("end_time", task.getEndTime());
+        values.put("is_completed", task.isCompleted() ? 1 : 0);
+        values.put("is_notified", task.isNotified() ? 1 : 0);
+
+        long id = db.insert("Task", null, values);
+        db.close();
+        return id;
+    }
+    public List<Task> getAllTasks() {
+        List<Task> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DatabaseHelper.TABLE_TASK, null, null, null, null, null, DatabaseHelper.COLUMN_TASK_ID + " DESC");
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Task t = new Task();
+                t.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_ID)));
+                t.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_USER_ID)));
+                int catIdx = cursor.getColumnIndex(DatabaseHelper.COLUMN_TASK_CATEGORY_ID);
+                if (!cursor.isNull(catIdx)) t.setCategoryId(cursor.getInt(catIdx));
+                t.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_TITLE)));
+                t.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_DESCRIPTION)));
+                t.setStartTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_START)));
+                t.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_END)));
+                t.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_COMPLETED)) == 1);
+                t.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_NOTIFIED)) == 1);
+                list.add(t);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return list;
+    }
+
+    // Optional: get tasks by user
+    public List<Task> getTasksByUser(int userId) {
+        List<Task> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DatabaseHelper.TABLE_TASK, null, DatabaseHelper.COLUMN_TASK_USER_ID + " = ?", new String[]{String.valueOf(userId)}, null, null, DatabaseHelper.COLUMN_TASK_ID + " DESC");
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Task t = new Task();
+                t.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_ID)));
+                t.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_USER_ID)));
+                int catIdx = cursor.getColumnIndex(DatabaseHelper.COLUMN_TASK_CATEGORY_ID);
+                if (!cursor.isNull(catIdx)) t.setCategoryId(cursor.getInt(catIdx));
+                t.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_TITLE)));
+                t.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_DESCRIPTION)));
+                t.setStartTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_START)));
+                t.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_END)));
+                t.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_COMPLETED)) == 1);
+                t.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_NOTIFIED)) == 1);
+                list.add(t);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return list;
+    }
+    // 🟢 Lấy một task theo ID
+    public Task getTaskById(int taskId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_TASK,
+                null,
+                DatabaseHelper.COLUMN_TASK_ID + " = ?",
+                new String[]{String.valueOf(taskId)},
+                null,
+                null,
+                null
+        );
+
+        Task t = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            t = new Task();
+            t.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_ID)));
+            t.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_USER_ID)));
+            int catIdx = cursor.getColumnIndex(DatabaseHelper.COLUMN_TASK_CATEGORY_ID);
+            if (!cursor.isNull(catIdx)) t.setCategoryId(cursor.getInt(catIdx));
+            t.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_TITLE)));
+            t.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_DESCRIPTION)));
+            t.setStartTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_START)));
+            t.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_END)));
+            t.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_COMPLETED)) == 1);
+            t.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_NOTIFIED)) == 1);
+            cursor.close();
+        }
+        db.close();
+        return t;
+    }
+    public List<Task> getTasksByGroup(String groupName) {
+        List<Task> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM Task WHERE group_name=?", new String[]{groupName});
+        if (c.moveToFirst()) {
+            do {
+                Task t = new Task();
+                t.setTaskId(c.getInt(c.getColumnIndexOrThrow("task_id")));
+                t.setTitle(c.getString(c.getColumnIndexOrThrow("title")));
+                t.setDescription(c.getString(c.getColumnIndexOrThrow("description")));
+                t.setStartTime(c.getString(c.getColumnIndexOrThrow("start_time")));
+                t.setEndTime(c.getString(c.getColumnIndexOrThrow("end_time")));
+                t.setCompleted(c.getInt(c.getColumnIndexOrThrow("is_completed")) == 1);
+                // Nếu class Task KHÔNG có groupName, bỏ dòng này:
+                // t.setGroupName(c.getString(c.getColumnIndexOrThrow("group_name")));
+                list.add(t);
+            } while (c.moveToNext());
+        }
+        c.close();
+        db.close();
+        return list;
+    }
+
+
+}
