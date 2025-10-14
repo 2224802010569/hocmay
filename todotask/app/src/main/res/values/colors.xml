@@ -4,5 +4,6 @@
     <color name="todo_light">#A8EFFF</color>
     <color name="todo_yellow">#FFD700</color>
     <color name="todo_blue">#33C1FF</color>
+    <color name="teal_200">#03DAC5</color>
     <color name="todo_text">#000000</color>
 </resources>

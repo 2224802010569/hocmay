@@ -1,6 +1,7 @@
 package com.example.todotask.ui.user;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,22 +22,17 @@ public class UserInfoActivity extends AppCompatActivity {
         TextView tvEmail = findViewById(R.id.tvEmail);
         Button btnLogout = findViewById(R.id.btnLogout);
 
-        // Lấy thông tin thật từ Intent
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("user_name");
-        String email = intent.getStringExtra("user_email");
+        // 🔹 Lấy thông tin từ SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        String name = prefs.getString("user_name", "(Không có dữ liệu)");
+        String email = prefs.getString("user_email", "(Không có dữ liệu)");
 
-        // Hiển thị thông tin thật
-        if (name != null && email != null) {
-            tvUsername.setText("Tên đăng nhập: " + name);
-            tvEmail.setText("Email: " + email);
-        } else {
-            tvUsername.setText("Tên đăng nhập: (Không có dữ liệu)");
-            tvEmail.setText("Email: (Không có dữ liệu)");
-        }
+        tvUsername.setText("Tên đăng nhập: " + name);
+        tvEmail.setText("Email: " + email);
 
-        // Nút đăng xuất
+        // 🔹 Đăng xuất: xóa prefs và quay lại Login
         btnLogout.setOnClickListener(v -> {
+            prefs.edit().clear().apply();
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);

@@ -41,18 +41,24 @@ public class LoginActivity extends AppCompatActivity {
             if (success) {
                 Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
-                // Lấy user hiện tại từ repository (thông tin thật)
+                // Lấy user hiện tại từ DB
                 com.example.todotask.data.model.User currentUser =
                         new com.example.todotask.data.repository.UserRepository(this)
                                 .login(email, password);
 
-                // Chuyển sang UserInfoActivity và truyền dữ liệu thật
-                Intent intent = new Intent(getApplicationContext(), com.example.todotask.ui.user.UserInfoActivity.class);
-                intent.putExtra("user_name", currentUser.getName());
-                intent.putExtra("user_email", currentUser.getGmail());
+                // 👉 Lưu user vào SharedPreferences
+                getSharedPreferences("user_prefs", MODE_PRIVATE)
+                        .edit()
+                        .putString("user_name", currentUser.getName())
+                        .putString("user_email", currentUser.getGmail())
+                        .apply();
+
+                // Chuyển sang MainActivity
+                Intent intent = new Intent(getApplicationContext(), com.example.todotask.ui.main.MainActivity.class);
                 startActivity(intent);
                 finish();
-            } else {
+            }
+            else {
                 Toast.makeText(this, "Sai email hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
             }
         });

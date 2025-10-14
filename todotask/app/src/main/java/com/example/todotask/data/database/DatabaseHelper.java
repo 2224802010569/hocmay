@@ -6,13 +6,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "todotask.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String TABLE_USER = "User";
     public static final String COLUMN_USER_ID = "user_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_GMAIL = "gmail";
     public static final String COLUMN_PASSWORD = "password";
+    public static final String TABLE_CATEGORY = "categories";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,6 +27,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_GMAIL + " TEXT UNIQUE, "
                 + COLUMN_PASSWORD + " TEXT)";
         db.execSQL(CREATE_USER_TABLE);
+
+        String CREATE_CATEGORY_TABLE = "CREATE TABLE " + TABLE_CATEGORY + "("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "name TEXT NOT NULL, "
+                + "color TEXT NOT NULL)";
+        db.execSQL(CREATE_CATEGORY_TABLE);
 
         // Dữ liệu mẫu
         db.execSQL("INSERT INTO " + TABLE_USER + " (name, gmail, password) VALUES " +
