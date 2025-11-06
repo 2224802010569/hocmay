@@ -32,7 +32,7 @@ public class CategoryDao {
         db.close();
     }
 
-    public List<Category> getAllCategories() {
+    /*public List<Category> getAllCategories() {
         List<Category> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DatabaseHelper.TABLE_CATEGORY,
@@ -48,6 +48,25 @@ public class CategoryDao {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
+        return list;
+    }*/
+    public List<Category> getAllCategories() {
+        List<Category> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(DatabaseHelper.TABLE_CATEGORY,
+                new String[]{DatabaseHelper.COLUMN_CATEGORY_ID, DatabaseHelper.COLUMN_CATEGORY_NAME, DatabaseHelper.COLUMN_CATEGORY_COLOR},
+                null, null, null, null, DatabaseHelper.COLUMN_CATEGORY_ID + " DESC");
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                list.add(new Category(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_NAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_COLOR))
+                ));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
         db.close();
         return list;
     }

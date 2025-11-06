@@ -17,8 +17,8 @@ public class TaskRepository {
         return dao.getAllTasks();
     }
 
-    public boolean add(Task task) {
-        return dao.addTask(task) != -1;
+    public long insert (Task task) {
+        return dao.addTask(task);
     }
 
     public void delete(int id) {

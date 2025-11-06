@@ -17,8 +17,8 @@ public class TaskViewModel {
         return repository.getAll();
     }
 
-    public boolean insert(Task task) {
-        return repository.add(task);
+    public long insert(Task task) {
+        return repository.insert(task);
     }
 
     public void update(Task task) {

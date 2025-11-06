@@ -43,6 +43,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
         rv = findViewById(R.id.recyclerTasks);
         fab = findViewById(R.id.fabAdd);
         btnFilter = findViewById(R.id.btnFilter);
+        /*btnMenu = findViewById(R.id.btnMenu);*/
 
         repo = new TaskRepository(this);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -57,7 +58,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
         });
 
         btnFilter.setOnClickListener(v -> showFilterMenu(v));
-        btnMenu.setOnClickListener(v -> {
+       /* btnMenu.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(TaskListActivity.this, btnMenu);
             popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
 
@@ -79,7 +80,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
             });
 
             popup.show();
-        });
+        });*/
 
     }
 
@@ -89,12 +90,12 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_filter, popup.getMenu());
 
-        popup.setOnMenuItemClickListener(item -> handleFilter(item));
+        //popup.setOnMenuItemClickListener(item -> handleFilter(item));
         popup.show();
     }
 
     // 🔹 Xử lý khi chọn item trong menu lọc
-    private boolean handleFilter(MenuItem item) {
+    /*private boolean handleFilter(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.filter_tdm:
                 currentFilter = "TDMU";
@@ -115,7 +116,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
                 return true;
         }
         return false;
-    }
+    }*/
 
     private void loadTasks() {
         tasks.clear();

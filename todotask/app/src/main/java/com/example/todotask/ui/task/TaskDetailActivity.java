@@ -82,7 +82,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     // Hiển thị hộp chọn thời gian (giả lập đơn giản, có thể dùng DatePickerDialog)
     private void showTimePicker(EditText target) {
         Toast.makeText(this, "Hiển thị DateTimePicker cho: " + target.getHint(), Toast.LENGTH_SHORT).show();
-        // TODO: bạn có thể thay bằng DatePickerDialog + TimePickerDialog thực tế
+        // TODO:  có thể thay bằng DatePickerDialog + TimePickerDialog thực tế
     }
 
     private void saveTask() {
@@ -114,7 +114,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             newTask.setCompleted(false);
             newTask.setNotified(false);
             newTask.setUserId(1); // TODO: lấy userId thực tế từ session
-            viewModel.insert(newTask);
+            long id = viewModel.insert(newTask);
             Toast.makeText(this, "Đã thêm task mới", Toast.LENGTH_SHORT).show();
         }
 

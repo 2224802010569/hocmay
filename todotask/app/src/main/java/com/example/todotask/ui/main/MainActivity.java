@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.todotask.R;
 import com.example.todotask.ui.user.UserInfoActivity;
 import com.example.todotask.ui.category.CategoryActivity;
+import com.example.todotask.ui.task.AddTaskActivity;
+import com.example.todotask.ui.task.TaskListActivity;
+import com.example.todotask.ui.task.TaskDetailActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
         Button btnUserInfo = findViewById(R.id.btnUserInfo);
         Button btnCategory = findViewById(R.id.btnCategory);
+        Button btnTaskList = findViewById(R.id.btnTaskList);
+        Button btnAddTask = findViewById(R.id.btnAddTask);
+        Button btnEditTask = findViewById(R.id.btnEditTask);
 
         btnUserInfo.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
@@ -29,5 +35,20 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), CategoryActivity.class);
             startActivity(intent);
         });
+        btnTaskList.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), TaskListActivity.class);
+            startActivity(intent);
+        });
+
+        btnAddTask.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), AddTaskActivity.class);
+            startActivity(intent);
+        });
+
+        btnEditTask.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), TaskDetailActivity.class);
+            startActivity(intent);
+        });
+
     }
 }

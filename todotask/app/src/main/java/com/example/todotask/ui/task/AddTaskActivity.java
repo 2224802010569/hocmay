@@ -9,6 +9,8 @@ import com.example.todotask.data.model.Task;
 import com.example.todotask.data.model.Category;
 import com.example.todotask.data.repository.TaskRepository;
 import com.example.todotask.data.repository.CategoryRepository;
+import androidx.appcompat.app.AlertDialog;
+import java.util.ArrayList;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,12 +23,15 @@ import android.widget.AdapterView;
 public class AddTaskActivity extends AppCompatActivity {
 
     private EditText edtTitle, edtDescription, edtStartTime, edtEndTime;
-    private Spinner spCategory;
     private Button btnSave;
+    private ImageButton btnGroupDropdown;
+    private TextView tvGroupName;
+
     private TaskRepository taskRepo;
     private CategoryRepository categoryRepo;
     private int selectedCategoryId = -1;
     private Calendar startCal, endCal;
+    private List<Category> categoryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +42,9 @@ public class AddTaskActivity extends AppCompatActivity {
         edtDescription = findViewById(R.id.edtDescription);
         edtStartTime = findViewById(R.id.edtStartTime);
         edtEndTime = findViewById(R.id.edtEndTime);
-        spCategory = findViewById(R.id.spCategory);
         btnSave = findViewById(R.id.btnSaveTask);
+        btnGroupDropdown = findViewById(R.id.btnGroupDropdown);
+        tvGroupName = findViewById(R.id.tvGroupName);
 
         taskRepo = new TaskRepository(getApplication());
         categoryRepo = new CategoryRepository(getApplication());
@@ -46,44 +52,35 @@ public class AddTaskActivity extends AppCompatActivity {
         startCal = Calendar.getInstance();
         endCal = Calendar.getInstance();
 
-        setupCategorySpinner();
+
+        categoryList = categoryRepo.getAll();
+        if (categoryList == null) categoryList = new ArrayList<>();
+
         setupDatePickers();
 
+        btnGroupDropdown.setOnClickListener(v -> showCategoryDialog());
         btnSave.setOnClickListener(v -> saveTask());
     }
-    private void setupCategorySpinner() {
-        // Lấy danh sách từ repository (hàm của bạn là getAll())
-        List<Category> categories = categoryRepo.getAll();
-
-        // Nếu danh sách rỗng, thêm 1 mục "Không phân loại"
-        if (categories == null) {
-            categories = new java.util.ArrayList<>();
+    private void showCategoryDialog() {
+        if (categoryList.isEmpty()) {
+            Toast.makeText(this, "Chưa có nhóm nào!", Toast.LENGTH_SHORT).show();
+            return;
         }
-        // Tạo 1 Category "Không phân loại" tạm (id = -1)
-        Category none = new Category(-1, "Không phân loại", "#CCCCCC");
-        categories.add(0, none);
 
-        ArrayAdapter<Category> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, categories);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCategory.setAdapter(adapter);
+        String[] names = new String[categoryList.size()];
+        for (int i = 0; i < categoryList.size(); i++) {
+            names[i] = categoryList.get(i).getName();
+        }
 
-        // Khi chọn, lấy id thực của Category
-        spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Category sel = (Category) parent.getItemAtPosition(position);
-                if (sel != null) selectedCategoryId = sel.getId();
-                else selectedCategoryId = -1;
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                selectedCategoryId = -1;
-            }
-        });
+        new AlertDialog.Builder(this)
+                .setTitle("Chọn nhóm công việc")
+                .setItems(names, (dialog, which) -> {
+                    Category selected = categoryList.get(which);
+                    selectedCategoryId = selected.getId();
+                    tvGroupName.setText(selected.getName());
+                })
+                .show();
     }
-
-
 
     private void setupDatePickers() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
