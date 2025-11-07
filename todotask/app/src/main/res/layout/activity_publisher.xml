@@ -17,7 +17,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nhà phát hành"
+            android:text="Nhà phát triển"
             android:textStyle="bold"
             android:textSize="20sp"
             android:textColor="@android:color/black"
@@ -69,7 +69,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MSSV"
+                android:text="MSSV-2224802010564"
                 android:textSize="14sp"
                 android:textColor="@android:color/black" />
         </LinearLayout>
@@ -117,7 +117,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MSSV"
+                android:text="MSSV-2224802010569"
                 android:textSize="14sp"
                 android:textColor="@android:color/black" />
         </LinearLayout>

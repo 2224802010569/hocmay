@@ -13,6 +13,10 @@ public class TaskViewModel {
         repository = new TaskRepository(context);
     }
 
+    public Task getTaskById(int id) {
+        return repository.getTaskById(id);
+    }
+
     public List<Task> getAllTasks() {
         return repository.getAll();
     }

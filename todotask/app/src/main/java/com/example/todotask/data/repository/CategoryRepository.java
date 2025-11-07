@@ -6,6 +6,7 @@ import com.example.todotask.data.model.Category;
 import com.example.todotask.data.database.DatabaseHelper;
 import java.util.List;
 
+
 public class CategoryRepository {
     private final CategoryDao dao;
 
@@ -28,5 +29,9 @@ public class CategoryRepository {
     public void update(Category category) {
         dao.updateCategory(category);
     }
+    public Category getById(int id) {
+        return dao.getCategoryById(id);
+    }
+
 
 }

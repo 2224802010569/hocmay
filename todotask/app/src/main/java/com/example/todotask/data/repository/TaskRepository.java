@@ -34,6 +34,10 @@ public class TaskRepository {
     public List<Task> getTasksByGroup(String groupName) {
         return dao.getTasksByGroup(groupName);
     }
+    public List<Task> getByCategory(int categoryId) {
+        return dao.getByCategory(categoryId);
+    }
+
 
 
 }

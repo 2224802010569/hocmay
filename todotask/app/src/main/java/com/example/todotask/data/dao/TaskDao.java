@@ -164,7 +164,7 @@ public class TaskDao {
         db.close();
         return t;
     }
-    public List<Task> getTasksByGroup(String groupName) {
+    /*public List<Task> getTasksByGroup(String groupName) {
         List<Task> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM Task WHERE group_name=?", new String[]{groupName});
@@ -183,6 +183,99 @@ public class TaskDao {
             } while (c.moveToNext());
         }
         c.close();
+        db.close();
+        return list;
+    }*/
+    // 🟢 Lọc task theo categoryId
+    public List<Task> getByCategory(int categoryId) {
+        List<Task> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_TASK,
+                null,
+                DatabaseHelper.COLUMN_TASK_CATEGORY_ID + " = ?",
+                new String[]{String.valueOf(categoryId)},
+                null, null,
+                DatabaseHelper.COLUMN_TASK_ID + " DESC"
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Task t = new Task();
+                t.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_ID)));
+                t.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_USER_ID)));
+                int catIdx = cursor.getColumnIndex(DatabaseHelper.COLUMN_TASK_CATEGORY_ID);
+                if (!cursor.isNull(catIdx)) t.setCategoryId(cursor.getInt(catIdx));
+                t.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_TITLE)));
+                t.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_DESCRIPTION)));
+                t.setStartTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_START)));
+                t.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_END)));
+                t.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_COMPLETED)) == 1);
+                t.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_NOTIFIED)) == 1);
+                list.add(t);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return list;
+    }
+    /*public List<Task> getTasksByGroup(String groupName) {
+        List<Task> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT t.* FROM " + DatabaseHelper.TABLE_TASK + " t " +
+                        "JOIN " + DatabaseHelper.TABLE_CATEGORY + " c ON t.category_id = c.id " +
+                        "WHERE c.name = ?", new String[]{groupName}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                Task t = new Task();
+                t.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("task_id")));
+                t.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+                t.setCategoryId(cursor.getInt(cursor.getColumnIndexOrThrow("category_id")));
+                t.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                t.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+                t.setStartTime(cursor.getString(cursor.getColumnIndexOrThrow("start_time")));
+                t.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow("end_time")));
+                t.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow("is_completed")) == 1);
+                t.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow("is_notified")) == 1);
+                list.add(t);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return list;
+    }*/
+    public List<Task> getTasksByGroup(String categoryName) {
+        List<Task> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // ✅ Truy vấn chính xác các cột theo schema thật trong DatabaseHelper
+        String query = "SELECT t.task_id, t.title, t.description, t.is_completed, t.category_id " +
+                "FROM Task t " +
+                "JOIN Category c ON t.category_id = c.category_id " +
+                "WHERE c.name = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{categoryName});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Task task = new Task();
+                task.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("task_id")));
+                task.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                task.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+                task.setCategoryId(cursor.getInt(cursor.getColumnIndexOrThrow("category_id")));
+                task.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow("is_completed")) == 1);
+
+                list.add(task);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
         db.close();
         return list;
     }

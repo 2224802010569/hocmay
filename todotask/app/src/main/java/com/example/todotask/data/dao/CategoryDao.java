@@ -70,6 +70,28 @@ public class CategoryDao {
         db.close();
         return list;
     }
+    // trả về null nếu không tìm thấy - lay id cho task detail tách riêng add task
+    public Category getCategoryById(int id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Category cat = null;
+        Cursor cursor = db.query(DatabaseHelper.TABLE_CATEGORY,
+                new String[]{DatabaseHelper.COLUMN_CATEGORY_ID, DatabaseHelper.COLUMN_CATEGORY_NAME, DatabaseHelper.COLUMN_CATEGORY_COLOR},
+                DatabaseHelper.COLUMN_CATEGORY_ID + " = ?",
+                new String[]{String.valueOf(id)},
+                null, null, null, "1");
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                cat = new Category(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_NAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CATEGORY_COLOR))
+                );
+            }
+            cursor.close();
+        }
+        db.close();
+        return cat;
+    }
 
     public void updateCategory(Category category) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();

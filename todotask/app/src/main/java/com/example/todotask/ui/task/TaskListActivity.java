@@ -16,7 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todotask.R;
 import com.example.todotask.data.model.Task;
 import com.example.todotask.data.repository.TaskRepository;
+import com.example.todotask.ui.category.CategoryActivity;
+import com.example.todotask.ui.user.UserInfoActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.todotask.data.repository.CategoryRepository;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +46,19 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
 
+        //khai báo search
+        EditText etSearch = findViewById(R.id.etSearch);
+
+
+
         rv = findViewById(R.id.recyclerTasks);
         fab = findViewById(R.id.fabAdd);
         btnFilter = findViewById(R.id.btnFilter);
         /*btnMenu = findViewById(R.id.btnMenu);*/
+        ImageButton btnGroupDropdown = findViewById(R.id.btnGroupDropdown);
+
+        btnGroupDropdown.setOnClickListener(v -> showGroupDropdown(v));
+
 
         repo = new TaskRepository(this);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -57,7 +72,21 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
             startActivityForResult(i, REQ_ADD);
         });
 
-        btnFilter.setOnClickListener(v -> showFilterMenu(v));
+        btnFilter.setOnClickListener(v -> showMainMenu(v));
+        //ánh xạ etsearhc
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterBySearch(s.toString().trim());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
        /* btnMenu.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(TaskListActivity.this, btnMenu);
             popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
@@ -85,14 +114,14 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
     }
 
     // 🔹 Hiển thị popup menu lọc
-    private void showFilterMenu(android.view.View anchor) {
+    /*private void showFilterMenu(android.view.View anchor) {
         PopupMenu popup = new PopupMenu(this, anchor);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_filter, popup.getMenu());
 
         //popup.setOnMenuItemClickListener(item -> handleFilter(item));
         popup.show();
-    }
+    }*/
 
     // 🔹 Xử lý khi chọn item trong menu lọc
     /*private boolean handleFilter(MenuItem item) {
@@ -125,7 +154,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
     }
 
     // 🔹 Hàm lọc
-    private void filterTasks() {
+   /* private void filterTasks() {
         tasks.clear();
         if (currentFilter == null) {
             tasks.addAll(repo.getAll());
@@ -133,12 +162,19 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
             tasks.addAll(repo.getTasksByGroup(currentFilter));
         }
         adapter.notifyDataSetChanged();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onEdit(Task task) {
         Toast.makeText(this, "Edit: " + task.getTitle(), Toast.LENGTH_SHORT).show();
+    }*/
+    @Override
+    public void onEdit(Task task) {
+        Intent intent = new Intent(TaskListActivity.this, TaskDetailActivity.class);
+        intent.putExtra("task_id", task.getTaskId());
+        startActivity(intent);
     }
+
 
     @Override
     public void onDelete(Task task) {
@@ -165,7 +201,110 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
     @Override
     protected void onResume() {
         super.onResume();
-        if (currentFilter != null) filterTasks();
-        else loadTasks();
+        if (currentFilter != null) {
+            tasks.clear();
+            tasks.addAll(repo.getTasksByGroup(currentFilter));
+            adapter.notifyDataSetChanged();
+        } else {
+            loadTasks();
+        }
+
     }
+    private void showGroupDropdown(android.view.View anchor) {
+        PopupMenu popup = new PopupMenu(this, anchor);
+        CategoryRepository categoryRepository = new CategoryRepository(this);
+
+        // 🔹 Lấy danh sách nhóm từ DB
+        List<com.example.todotask.data.model.Category> categories = categoryRepository.getAll();
+
+        // 🔹 Thêm nhóm từ DB vào menu
+        for (com.example.todotask.data.model.Category category : categories) {
+            popup.getMenu().add(category.getName());
+        }
+
+        // 🔹 Thêm lựa chọn hiển thị tất cả
+        popup.getMenu().add("Tất cả");
+
+        popup.setOnMenuItemClickListener(item -> {
+            String selectedGroup = item.getTitle().toString();
+
+            if (selectedGroup.equals("Tất cả")) {
+                currentFilter = null;
+                loadTasks();
+            } else {
+                currentFilter = selectedGroup;
+
+                // 🟢 Lấy task theo nhóm từ DB
+                tasks.clear();
+                tasks.addAll(repo.getTasksByGroup(selectedGroup));
+                adapter.notifyDataSetChanged();
+            }
+
+            Toast.makeText(this, "Lọc: " + selectedGroup, Toast.LENGTH_SHORT).show();
+            return true;
+        });
+
+        popup.show();
+    }
+
+    private void filterBySearch(String keyword) {
+        List<Task> allTasks;
+
+        // Nếu đang lọc theo nhóm Category thì chỉ tìm trong nhóm đó
+        if (currentFilter != null) {
+            allTasks = repo.getTasksByGroup(currentFilter);
+        } else {
+            allTasks = repo.getAll();
+        }
+
+        tasks.clear();
+
+        if (keyword.isEmpty()) {
+            tasks.addAll(allTasks);
+        } else {
+            for (Task t : allTasks) {
+                if (t.getTitle().toLowerCase().contains(keyword.toLowerCase())) {
+                    tasks.add(t);
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+    //show context menu trang chủ
+    private void showMainMenu(android.view.View anchor) {
+        PopupMenu popup = new PopupMenu(this, anchor);
+        popup.getMenu().add("Account");
+        popup.getMenu().add("Into");
+        popup.getMenu().add("Nhóm");
+
+        popup.setOnMenuItemClickListener(item -> {
+            String title = item.getTitle().toString();
+            Intent intent = null;
+            switch (title) {
+                case "Account":
+                     intent = new Intent(this, UserInfoActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case "Into":
+                    // Mở trang nhà phát hành
+                     intent = new Intent(this, PublisherActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case "Nhóm":
+                     intent = new Intent(this, CategoryActivity.class);
+                    startActivity(intent);
+                    break;
+            }
+            if (intent != null) {
+                startActivity(intent);
+            }
+            return true;
+        });
+
+        popup.show();
+    }
+
 }
