@@ -23,7 +23,7 @@ import com.example.todotask.data.repository.CategoryRepository;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
-
+import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +64,16 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
         rv.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TaskAdapter(tasks, this);
         rv.setAdapter(adapter);
+
+        // Hiển thị tên người dùng
+        TextView tvUsername = findViewById(R.id.tvUsername);
+
+        // Lấy dữ liệu từ SharedPreferences
+        String username = getSharedPreferences("user_prefs", MODE_PRIVATE)
+                .getString("user_name", "Người dùng");
+
+        // Gán tên vào TextView
+        tvUsername.setText(username);
 
         loadTasks();
 
