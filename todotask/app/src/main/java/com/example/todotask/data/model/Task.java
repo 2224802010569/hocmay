@@ -41,6 +41,14 @@ public class Task {
     public boolean isNotified() { return isNotified; }
     public void setNotified(boolean notified) { isNotified = notified; }
     private String groupName;
+    private String categoryColor;
+    public String getCategoryColor() {
+        return categoryColor;
+    }
+
+    public void setCategoryColor(String categoryColor) {
+        this.categoryColor = categoryColor;
+    }
 
     public String getGroupName() {
         return groupName;

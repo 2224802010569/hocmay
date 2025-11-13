@@ -83,9 +83,13 @@ public class TaskDao {
         db.close();
         return id;
     }
-    public List<Task> getAllTasks() {
+   /* public List<Task> getAllTasks() {
         List<Task> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+        // 🟢 JOIN Category để lấy thêm tên nhóm và màu
+        String sql = "SELECT t.*, c.name AS categoryName, c.color AS categoryColor " +
+                "FROM Task t LEFT JOIN Category c ON t.category_id = c.category_id " +
+                "ORDER BY t.task_id DESC";
         Cursor cursor = db.query(DatabaseHelper.TABLE_TASK, null, null, null, null, null, DatabaseHelper.COLUMN_TASK_ID + " DESC");
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -106,7 +110,53 @@ public class TaskDao {
         }
         db.close();
         return list;
-    }
+    }*/
+   public List<Task> getAllTasks() {
+       List<Task> list = new ArrayList<>();
+       SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+       // ✅ Dùng đúng câu SQL có JOIN
+       String sql = "SELECT t.*, c.name AS categoryName, c.color AS categoryColor " +
+               "FROM Task t LEFT JOIN Category c ON t.category_id = c.category_id " +
+               "ORDER BY t.task_id DESC";
+
+       Cursor cursor = db.rawQuery(sql, null);
+
+       if (cursor != null && cursor.moveToFirst()) {
+           do {
+               Task t = new Task();
+               t.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("task_id")));
+               t.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+
+               int catIdx = cursor.getColumnIndex("category_id");
+               if (!cursor.isNull(catIdx))
+                   t.setCategoryId(cursor.getInt(catIdx));
+
+               t.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+               t.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+               t.setStartTime(cursor.getString(cursor.getColumnIndexOrThrow("start_time")));
+               t.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow("end_time")));
+               t.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow("is_completed")) == 1);
+               t.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow("is_notified")) == 1);
+
+               // 🟡 Lấy thêm dữ liệu nhóm
+               int nameIdx = cursor.getColumnIndex("categoryName");
+               if (nameIdx != -1)
+                   t.setGroupName(cursor.getString(nameIdx));
+
+               int colorIdx = cursor.getColumnIndex("categoryColor");
+               if (colorIdx != -1)
+                   t.setCategoryColor(cursor.getString(colorIdx));
+
+               list.add(t);
+           } while (cursor.moveToNext());
+           cursor.close();
+       }
+
+       db.close();
+       return list;
+   }
+
 
     // Optional: get tasks by user
     public List<Task> getTasksByUser(int userId) {
@@ -126,6 +176,13 @@ public class TaskDao {
                 t.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_END)));
                 t.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_COMPLETED)) == 1);
                 t.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TASK_NOTIFIED)) == 1);
+
+                // 🟡 Lấy thêm dữ liệu nhóm
+                int nameIdx = cursor.getColumnIndex("categoryName");
+                if (nameIdx != -1) t.setGroupName(cursor.getString(nameIdx));
+
+                int colorIdx = cursor.getColumnIndex("categoryColor");
+                if (colorIdx != -1) t.setCategoryColor(cursor.getString(colorIdx));
                 list.add(t);
             } while (cursor.moveToNext());
             cursor.close();
@@ -187,7 +244,7 @@ public class TaskDao {
         return list;
     }*/
     // 🟢 Lọc task theo categoryId
-    public List<Task> getByCategory(int categoryId) {
+    /*public List<Task> getByCategory(int categoryId) {
         List<Task> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -219,7 +276,53 @@ public class TaskDao {
         }
         db.close();
         return list;
+    }*/
+    public List<Task> getByCategory(int categoryId) {
+        List<Task> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // ✅ Dùng JOIN để lấy luôn tên nhóm và màu
+        String sql = "SELECT t.*, c.name AS categoryName, c.color AS categoryColor " +
+                "FROM Task t LEFT JOIN Category c ON t.category_id = c.category_id " +
+                "WHERE t.category_id = ? " +
+                "ORDER BY t.task_id DESC";
+
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(categoryId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Task t = new Task();
+                t.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("task_id")));
+                t.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+
+                int catIdx = cursor.getColumnIndex("category_id");
+                if (!cursor.isNull(catIdx)) t.setCategoryId(cursor.getInt(catIdx));
+
+                t.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                t.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+                t.setStartTime(cursor.getString(cursor.getColumnIndexOrThrow("start_time")));
+                t.setEndTime(cursor.getString(cursor.getColumnIndexOrThrow("end_time")));
+                t.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow("is_completed")) == 1);
+                t.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow("is_notified")) == 1);
+
+                // 🟡 Lấy thêm tên nhóm & màu
+                int nameIdx = cursor.getColumnIndex("categoryName");
+                if (nameIdx != -1)
+                    t.setGroupName(cursor.getString(nameIdx));
+
+                int colorIdx = cursor.getColumnIndex("categoryColor");
+                if (colorIdx != -1)
+                    t.setCategoryColor(cursor.getString(colorIdx));
+
+                list.add(t);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+        return list;
     }
+
     /*public List<Task> getTasksByGroup(String groupName) {
         List<Task> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();

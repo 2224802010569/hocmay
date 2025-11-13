@@ -47,8 +47,19 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.VH> {
         holder.tvStatus.setText(t.isCompleted() ? "●" : "○");
         holder.tvStatus.setTextColor(t.isCompleted() ? Color.GREEN : Color.RED);
 
-        // Hiển thị màu nhóm (tạm thời đặt cố định, có thể đổi bằng categoryId sau)
-        holder.colorIndicator.setBackgroundColor(Color.parseColor("#FFD700"));
+       /* // Hiển thị màu nhóm (tạm thời đặt cố định, có thể đổi bằng categoryId sau)
+        holder.colorIndicator.setBackgroundColor(Color.parseColor("#FFD700"));*/
+
+        if (t.getCategoryColor() != null && !t.getCategoryColor().isEmpty()) {
+            try {
+                holder.colorIndicator.setBackgroundColor(Color.parseColor(t.getCategoryColor()));
+            } catch (IllegalArgumentException e) {
+                holder.colorIndicator.setBackgroundColor(Color.LTGRAY); // màu mặc định nếu sai
+            }
+        } else {
+            holder.colorIndicator.setBackgroundColor(Color.LTGRAY);
+        }
+
 
         // Khi click vào item → hiển thị menu Sửa / Xóa
         holder.itemView.setOnClickListener(v -> {
