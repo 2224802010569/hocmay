@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todotask.R;
+import com.example.todotask.data.repository.TaskRepository;
 import com.example.todotask.data.model.Category;
 import com.example.todotask.data.repository.CategoryRepository;
 import java.util.ArrayList;
@@ -114,6 +115,12 @@ public class CategoryActivity extends AppCompatActivity {
 
     // ------------------ POPUP XÁC NHẬN XÓA ------------------
     private void confirmDelete(Category c) {
+        // Kiểm tra nhóm còn task hay không
+        TaskRepository taskRepo = new TaskRepository(this);
+        if (taskRepo.getByCategory(c.getId()).size() > 0) {
+            Toast.makeText(this, "Nhóm này còn task, không thể xóa!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         new AlertDialog.Builder(this)
                 .setTitle("Xóa nhóm?")
                 .setMessage("Bạn có chắc muốn xóa '" + c.getName() + "' không?")

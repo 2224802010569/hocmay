@@ -353,7 +353,7 @@ public class TaskDao {
         db.close();
         return list;
     }*/
-    public List<Task> getTasksByGroup(String categoryName) {
+    /*public List<Task> getTasksByGroup(String categoryName) {
         List<Task> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -381,7 +381,82 @@ public class TaskDao {
 
         db.close();
         return list;
+    }*/
+    public List<Task> getTasksByGroup(String categoryName) {
+        List<Task> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Lấy cả màu và tên nhóm qua JOIN
+        String sql = "SELECT t.task_id, t.user_id, t.category_id, t.title, t.description, " +
+                "t.start_time, t.end_time, t.is_completed, t.is_notified, " +
+                "c.name AS categoryName, c.color AS categoryColor " +
+                "FROM Task t " +
+                "JOIN Category c ON t.category_id = c.category_id " +
+                "WHERE c.name = ? " +
+                "ORDER BY t.task_id DESC";
+
+        Cursor cursor = db.rawQuery(sql, new String[]{ categoryName });
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Task t = new Task();
+                t.setTaskId(cursor.getInt(cursor.getColumnIndexOrThrow("task_id")));
+
+                int userIdx = cursor.getColumnIndex("user_id");
+                if (userIdx != -1 && !cursor.isNull(userIdx)) t.setUserId(cursor.getInt(userIdx));
+
+                int catIdx = cursor.getColumnIndex("category_id");
+                if (catIdx != -1 && !cursor.isNull(catIdx)) t.setCategoryId(cursor.getInt(catIdx));
+
+                t.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                t.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+
+                int startIdx = cursor.getColumnIndex("start_time");
+                if (startIdx != -1) t.setStartTime(cursor.getString(startIdx));
+                int endIdx = cursor.getColumnIndex("end_time");
+                if (endIdx != -1) t.setEndTime(cursor.getString(endIdx));
+
+                int compIdx = cursor.getColumnIndex("is_completed");
+                if (compIdx != -1) t.setCompleted(cursor.getInt(compIdx) == 1);
+
+                int notiIdx = cursor.getColumnIndex("is_notified");
+                if (notiIdx != -1) t.setNotified(cursor.getInt(notiIdx) == 1);
+
+                // Lấy tên nhóm & màu (nếu có)
+                int nameIdx = cursor.getColumnIndex("categoryName");
+                if (nameIdx != -1 && !cursor.isNull(nameIdx)) t.setGroupName(cursor.getString(nameIdx));
+
+                int colorIdx = cursor.getColumnIndex("categoryColor");
+                if (colorIdx != -1 && !cursor.isNull(colorIdx)) t.setCategoryColor(cursor.getString(colorIdx));
+
+                list.add(t);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+        return list;
     }
+    public boolean hasTasksInCategory(int categoryId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM Task WHERE category_id = ?",
+                new String[]{String.valueOf(categoryId)}
+        );
+
+        boolean hasTask = false;
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                hasTask = cursor.getInt(0) > 0;
+            }
+            cursor.close();
+        }
+
+        db.close();
+        return hasTask;
+    }
+
 
 
 }

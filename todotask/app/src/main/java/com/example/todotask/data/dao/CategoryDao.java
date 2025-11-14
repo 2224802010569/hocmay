@@ -32,6 +32,7 @@ public class CategoryDao {
         db.close();
     }
 
+
     /*public List<Category> getAllCategories() {
         List<Category> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
