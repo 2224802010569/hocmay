@@ -5,14 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="Phân loại công việc"
-        android:textStyle="bold"
-        android:textSize="22sp"
-        android:textColor="?attr/colorOnPrimary"
-        android:layout_marginBottom="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <!-- Hàng tiêu đề + nút filter -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Phân loại công việc"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="?attr/colorOnPrimary"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <ImageButton
+            android:id="@+id/btnFilter"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_menu_sort_by_size" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCategory"

@@ -39,6 +39,16 @@
             android:layout_marginTop="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <ImageButton
+            android:id="@+id/btnFingerprint"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_fingerprint"
+            android:contentDescription="Fingerprint Login" />
+
 
         <TextView
             android:id="@+id/tvForgotPassword"

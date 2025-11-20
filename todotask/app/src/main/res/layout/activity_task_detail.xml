@@ -27,13 +27,20 @@
             android:gravity="center"
             android:textColor="#000" />
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/ivMenu"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="21dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:src="@android:drawable/ic_menu_sort_by_size"
-            app:tint="#000"
-            android:layout_alignParentEnd="true"/>
+            app:tint="#000" />-->
+        <ImageButton
+            android:id="@+id/btnFilter"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_menu_sort_by_size"/>
     </LinearLayout>
 
     <!-- spacing line -->
@@ -136,7 +143,7 @@
                 android:textColor="#000"
                 android:gravity="center_vertical"/>
 
-            <ImageButton
+            <!--<ImageButton
                 android:id="@+id/btnPickStartTime"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
@@ -146,7 +153,7 @@
                 android:layout_marginEnd="4dp"
                 android:background="@drawable/circle_white_shadow"
                 android:src="@android:drawable/ic_menu_recent_history"
-                app:tint="#00BCD4"/>
+                app:tint="#00BCD4"/>-->
         </RelativeLayout>
 
         <!-- Ngày kết thúc label -->
@@ -177,7 +184,7 @@
                 android:textColor="#000"
                 android:gravity="center_vertical"/>
 
-            <ImageButton
+           <!-- <ImageButton
                 android:id="@+id/btnPickEndTime"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
@@ -187,7 +194,7 @@
                 android:layout_marginEnd="4dp"
                 android:background="@drawable/circle_white_shadow"
                 android:src="@android:drawable/ic_menu_recent_history"
-                app:tint="#00BCD4"/>
+                app:tint="#00BCD4"/>-->
         </RelativeLayout>
 
         <!-- Mô tả label -->

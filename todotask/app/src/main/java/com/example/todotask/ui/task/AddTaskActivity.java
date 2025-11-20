@@ -1,6 +1,7 @@
 package com.example.todotask.ui.task;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,9 @@ import com.example.todotask.data.model.Task;
 import com.example.todotask.data.model.Category;
 import com.example.todotask.data.repository.TaskRepository;
 import com.example.todotask.data.repository.CategoryRepository;
+import com.example.todotask.ui.category.CategoryActivity;
+import com.example.todotask.ui.user.UserInfoActivity;
+import com.example.todotask.ui.main.MenuHelper;
 import androidx.appcompat.app.AlertDialog;
 import java.util.ArrayList;
 
@@ -32,6 +36,7 @@ public class AddTaskActivity extends AppCompatActivity {
     private int selectedCategoryId = -1;
     private Calendar startCal, endCal;
     private List<Category> categoryList;
+    private ImageButton btnFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +50,7 @@ public class AddTaskActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSaveTask);
         btnGroupDropdown = findViewById(R.id.btnGroupDropdown);
         tvGroupName = findViewById(R.id.tvGroupName);
-
+        btnFilter = findViewById(R.id.btnFilter);
         taskRepo = new TaskRepository(getApplication());
         categoryRepo = new CategoryRepository(getApplication());
 
@@ -57,7 +62,7 @@ public class AddTaskActivity extends AppCompatActivity {
         if (categoryList == null) categoryList = new ArrayList<>();
 
         setupDatePickers();
-
+        btnFilter.setOnClickListener(v -> MenuHelper.showMainMenu(this, v));
         btnGroupDropdown.setOnClickListener(v -> showCategoryDialog());
         btnSave.setOnClickListener(v -> saveTask());
     }

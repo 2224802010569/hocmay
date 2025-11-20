@@ -3,6 +3,7 @@ package com.example.todotask.ui.task;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.todotask.R;
 import com.example.todotask.data.model.Task;
 import com.example.todotask.data.model.Category;
+import com.example.todotask.ui.category.CategoryActivity;
+import com.example.todotask.ui.user.UserInfoActivity;
 import com.example.todotask.viewmodel.TaskViewModel;
 import com.example.todotask.data.repository.CategoryRepository;
-
+import android.widget.ImageButton;
+import com.example.todotask.ui.main.MenuHelper;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +38,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private int selectedCategoryId = -1;
     private List<Category> categoryList;
     private Calendar startCal, endCal;
+    private ImageButton btnFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +53,13 @@ public class TaskDetailActivity extends AppCompatActivity {
         edtStartTime = findViewById(R.id.edtStartTime);
         edtEndTime = findViewById(R.id.edtEndTime);
         edtDescription = findViewById(R.id.edtDescription);
-        btnPickStartTime = findViewById(R.id.btnPickStartTime);
-        btnPickEndTime = findViewById(R.id.btnPickEndTime);
+        /*btnPickStartTime = findViewById(R.id.btnPickStartTime);
+        btnPickEndTime = findViewById(R.id.btnPickEndTime);*/
         btnSaveTask = findViewById(R.id.btnSaveTask);
         btnBackTask = findViewById(R.id.btnBackTask);
         btnGroupDropdown = findViewById(R.id.btnGroupDropdown);
         tvGroupName = findViewById(R.id.tvGroupName);
+        btnFilter = findViewById(R.id.btnFilter);
 
         startCal = Calendar.getInstance();
         endCal = Calendar.getInstance();
@@ -84,6 +90,7 @@ public class TaskDetailActivity extends AppCompatActivity {
 
         // --- Nút Quay lại ---
         btnBackTask.setOnClickListener(v -> finish());
+        btnFilter.setOnClickListener(v -> MenuHelper.showMainMenu(this, v));
     }
 
     private void showTaskDetail(Task task) {
@@ -167,4 +174,5 @@ public class TaskDetailActivity extends AppCompatActivity {
 
         finish();
     }
+
 }

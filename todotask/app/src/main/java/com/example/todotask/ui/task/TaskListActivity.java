@@ -18,6 +18,7 @@ import com.example.todotask.data.model.Task;
 import com.example.todotask.data.repository.TaskRepository;
 import com.example.todotask.ui.category.CategoryActivity;
 import com.example.todotask.ui.user.UserInfoActivity;
+import com.example.todotask.ui.main.MenuHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.todotask.data.repository.CategoryRepository;
 import android.text.Editable;
@@ -34,7 +35,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
     private TaskRepository repo;
     private List<Task> tasks = new ArrayList<>();
     private FloatingActionButton fab;
-    private ImageButton btnMenu, btnFilter;
+    private ImageButton btnFilter;
 
     private static final int REQ_ADD = 1001;
 
@@ -82,7 +83,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
             startActivityForResult(i, REQ_ADD);
         });
 
-        btnFilter.setOnClickListener(v -> showMainMenu(v));
+        //btnFilter.setOnClickListener(v -> showMainMenu(v));
+        btnFilter.setOnClickListener(v -> MenuHelper.showMainMenu(this, v));
+
         //ánh xạ etsearhc
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -281,7 +284,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
 
         adapter.notifyDataSetChanged();
     }
-    //show context menu trang chủ
+    /*//show context menu trang chủ
     private void showMainMenu(android.view.View anchor) {
         PopupMenu popup = new PopupMenu(this, anchor);
         popup.getMenu().add("Account");
@@ -315,6 +318,6 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
         });
 
         popup.show();
-    }
+    }*/
 
 }

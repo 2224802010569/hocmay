@@ -15,12 +15,14 @@ import com.example.todotask.data.model.Category;
 import com.example.todotask.data.repository.CategoryRepository;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.example.todotask.ui.main.MenuHelper;
+import android.widget.ImageButton;
 public class CategoryActivity extends AppCompatActivity {
 
     private CategoryRepository repo;
     private List<Category> list;
     private CategoryAdapter adapter;
+    private ImageButton btnFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +35,14 @@ public class CategoryActivity extends AppCompatActivity {
 
         RecyclerView rv = findViewById(R.id.recyclerCategory);
         Button btnAdd = findViewById(R.id.btnAddCategory);
+        btnFilter = findViewById(R.id.btnFilter);
 
         adapter = new CategoryAdapter(list, this::onCategoryLongClick);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
 
         btnAdd.setOnClickListener(v -> showAddDialog());
+        btnFilter.setOnClickListener(v -> MenuHelper.showMainMenu(this, v));
     }
 
     // ------------------ MENU KHI NHẤN GIỮ ------------------
@@ -282,4 +286,5 @@ public class CategoryActivity extends AppCompatActivity {
         list.addAll(repo.getAll());
         adapter.notifyDataSetChanged();
     }
+
 }
