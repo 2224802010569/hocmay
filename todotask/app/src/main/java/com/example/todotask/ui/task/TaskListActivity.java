@@ -100,65 +100,9 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
             public void afterTextChanged(Editable s) {}
         });
 
-       /* btnMenu.setOnClickListener(v -> {
-            PopupMenu popup = new PopupMenu(TaskListActivity.this, btnMenu);
-            popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
-
-            popup.setOnMenuItemClickListener(item -> {
-                int id = item.getItemId();
-                if (id == R.id.menu_account) {
-                    Toast.makeText(TaskListActivity.this, "Account", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else if (id == R.id.menu_into) {
-                    // Mở trang Nhà phát hành
-                    Intent intent = new Intent(TaskListActivity.this, PublisherActivity.class);
-                    startActivity(intent);
-                    return true;
-                } else if (id == R.id.menu_group) {
-                    Toast.makeText(TaskListActivity.this, "Nhóm", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            });
-
-            popup.show();
-        });*/
-
     }
 
-    // 🔹 Hiển thị popup menu lọc
-    /*private void showFilterMenu(android.view.View anchor) {
-        PopupMenu popup = new PopupMenu(this, anchor);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_filter, popup.getMenu());
 
-        //popup.setOnMenuItemClickListener(item -> handleFilter(item));
-        popup.show();
-    }*/
-
-    // 🔹 Xử lý khi chọn item trong menu lọc
-    /*private boolean handleFilter(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.filter_tdm:
-                currentFilter = "TDMU";
-                filterTasks();
-                Toast.makeText(this, "Đang lọc: TDMU", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.filter_dilam:
-                currentFilter = "Đi làm";
-                filterTasks();
-                Toast.makeText(this, "Đang lọc: Đi làm", Toast.LENGTH_SHORT).show();
-                return true;
-
-            case R.id.filter_clear:
-                currentFilter = null;
-                loadTasks();
-                Toast.makeText(this, "Đã bỏ lọc", Toast.LENGTH_SHORT).show();
-                return true;
-        }
-        return false;
-    }*/
 
     private void loadTasks() {
         tasks.clear();
@@ -166,21 +110,7 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
         adapter.notifyDataSetChanged();
     }
 
-    // 🔹 Hàm lọc
-   /* private void filterTasks() {
-        tasks.clear();
-        if (currentFilter == null) {
-            tasks.addAll(repo.getAll());
-        } else {
-            tasks.addAll(repo.getTasksByGroup(currentFilter));
-        }
-        adapter.notifyDataSetChanged();
-    }*/
 
-    /*@Override
-    public void onEdit(Task task) {
-        Toast.makeText(this, "Edit: " + task.getTitle(), Toast.LENGTH_SHORT).show();
-    }*/
     @Override
     public void onEdit(Task task) {
         Intent intent = new Intent(TaskListActivity.this, TaskDetailActivity.class);
@@ -227,15 +157,15 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
         PopupMenu popup = new PopupMenu(this, anchor);
         CategoryRepository categoryRepository = new CategoryRepository(this);
 
-        // 🔹 Lấy danh sách nhóm từ DB
+        //  Lấy danh sách nhóm từ DB
         List<com.example.todotask.data.model.Category> categories = categoryRepository.getAll();
 
-        // 🔹 Thêm nhóm từ DB vào menu
+        //  Thêm nhóm từ DB vào menu
         for (com.example.todotask.data.model.Category category : categories) {
             popup.getMenu().add(category.getName());
         }
 
-        // 🔹 Thêm lựa chọn hiển thị tất cả
+        //  Thêm lựa chọn hiển thị tất cả
         popup.getMenu().add("Tất cả");
 
         popup.setOnMenuItemClickListener(item -> {
@@ -284,40 +214,5 @@ public class TaskListActivity extends AppCompatActivity implements TaskAdapter.O
 
         adapter.notifyDataSetChanged();
     }
-    /*//show context menu trang chủ
-    private void showMainMenu(android.view.View anchor) {
-        PopupMenu popup = new PopupMenu(this, anchor);
-        popup.getMenu().add("Account");
-        popup.getMenu().add("Into");
-        popup.getMenu().add("Nhóm");
-
-        popup.setOnMenuItemClickListener(item -> {
-            String title = item.getTitle().toString();
-            Intent intent = null;
-            switch (title) {
-                case "Account":
-                     intent = new Intent(this, UserInfoActivity.class);
-                    startActivity(intent);
-                    break;
-
-                case "Into":
-                    // Mở trang nhà phát hành
-                     intent = new Intent(this, PublisherActivity.class);
-                    startActivity(intent);
-                    break;
-
-                case "Nhóm":
-                     intent = new Intent(this, CategoryActivity.class);
-                    startActivity(intent);
-                    break;
-            }
-            if (intent != null) {
-                startActivity(intent);
-            }
-            return true;
-        });
-
-        popup.show();
-    }*/
 
 }

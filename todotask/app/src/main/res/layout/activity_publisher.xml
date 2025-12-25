@@ -25,13 +25,7 @@
             android:layout_centerVertical="true" />
 
         <!-- Icon menu góc phải -->
-        <!--<ImageView
-            android:id="@+id/ivMenu"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_sort_by_size"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" />-->
+
         <ImageButton
             android:id="@+id/btnFilter"
             android:layout_width="44dp"

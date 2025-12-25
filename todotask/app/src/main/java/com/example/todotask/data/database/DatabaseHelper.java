@@ -42,11 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_PASSWORD + " TEXT)";
         db.execSQL(CREATE_USER_TABLE);
 
-        /*String CREATE_CATEGORY_TABLE = "CREATE TABLE " + TABLE_CATEGORY + "("
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "name TEXT NOT NULL, "
-                + "color TEXT NOT NULL)";
-        db.execSQL(CREATE_CATEGORY_TABLE);*/
+
         // CREATE CATEGORY: dùng COLUMN_CATEGORY_ID = "category_id"
         String CREATE_CATEGORY_TABLE = "CREATE TABLE " + TABLE_CATEGORY + " ("
                 + COLUMN_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -55,20 +51,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CATEGORY_TABLE);
 
         // Task
-       /* String CREATE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TASK + " ("
-                + COLUMN_TASK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_TASK_USER_ID + " INTEGER, "
-                + COLUMN_TASK_CATEGORY_ID + " INTEGER, " //sửa từ INTEHERnull
-                + COLUMN_TASK_TITLE + " TEXT, "
-                + COLUMN_TASK_DESCRIPTION + " TEXT, "
-                + COLUMN_TASK_START + " TEXT, "
-                + COLUMN_TASK_END + " TEXT, "
-                + COLUMN_TASK_COMPLETED + " INTEGER DEFAULT 0, "
-                + COLUMN_TASK_NOTIFIED + " INTEGER DEFAULT 0, "
-                + "FOREIGN KEY(" + COLUMN_TASK_USER_ID + ") REFERENCES " + TABLE_USER + "(" + COLUMN_USER_ID + "), "
-                + "FOREIGN KEY(" + COLUMN_TASK_CATEGORY_ID + ") REFERENCES " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_ID + ")"
-                + ")";
-        db.execSQL(CREATE_TASK_TABLE);*/
         String CREATE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TASK + " ("
                 + COLUMN_TASK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_TASK_USER_ID + " INTEGER, "
@@ -85,19 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TASK_TABLE);
 
         // Dữ liệu mẫu
-        /*db.execSQL("INSERT INTO " + TABLE_USER + " (name, gmail, password) VALUES " +
-                "('ppk', '2224802010569@student.tdmu.edu.vn', '12345')," +
-                "('Trần Thị B', 'thib@example.com', 'abcdef');");
-        db.execSQL("INSERT OR IGNORE INTO " + TABLE_CATEGORY + " (" + COLUMN_CATEGORY_NAME +
-                "," + COLUMN_CATEGORY_COLOR + ") VALUES ('Công việc','#FF5733'), " +
-                "('Cá nhân','#33C1FF')");
-        db.execSQL("INSERT INTO " + TABLE_TASK + " (" + COLUMN_TASK_USER_ID + "," +
-                COLUMN_TASK_CATEGORY_ID + "," + COLUMN_TASK_TITLE + "," +
-                COLUMN_TASK_DESCRIPTION + "," + COLUMN_TASK_START + "," +
-                COLUMN_TASK_END + "," + COLUMN_TASK_COMPLETED + "," +
-                COLUMN_TASK_NOTIFIED + ") VALUES (1,1,'Họp nhóm dự án'," +
-                "'Chuẩn bị nội dung báo cáo tuần','2025-10-13 09:00:00'," +
-                "'2025-10-13 10:30:00',0,0)");*/
+
         db.execSQL("INSERT INTO " + TABLE_USER + " ("
                 + COLUMN_NAME + ", " + COLUMN_GMAIL + ", " + COLUMN_PASSWORD + ") VALUES "
                 + "('ppk', '2224802010569@student.tdmu.edu.vn', '12345'),"
